@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo | Defensa con IA y protección de datos</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23b11f4b'/%3E%3Cpath d='M16 5l9 4v6c0 6-3.8 10.4-9 12-5.2-1.6-9-6-9-12V9l9-4z' fill='white'/%3E%3C/svg%3E">
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button { font: inherit; cursor: pointer; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+      background: var(--cp-bg-elevated);
+      border-bottom: 1px solid var(--cp-border);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .logo {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      font-weight: 900;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: var(--cp-text-muted);
+      font-size: 12px;
+    }
+    .shell {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(30px, 4vw, 52px); line-height: 1.05; margin-bottom: 14px; }
+    h2 { font-size: 20px; margin-bottom: 12px; }
+    h3 { font-size: 16px; margin-bottom: 8px; }
+    p { color: var(--cp-text-muted); line-height: 1.45; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .metric strong { display: block; font-size: 24px; margin-top: 4px; }
+    .incident-grid {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 18px;
+      align-items: start;
+    }
+    .timeline {
+      display: grid;
+      gap: 12px;
+    }
+    .event {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 12px;
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--cp-surface-soft);
+    }
+    .time { font-weight: 800; color: var(--cp-accent); }
+    .severity {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .copilot {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 12px;
+    }
+    .prompt-list { display: grid; gap: 8px; }
+    .prompt-btn {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+    }
+    .prompt-btn.active {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+    }
+    .response {
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: var(--cp-surface-soft);
+      padding: 14px;
+      min-height: 300px;
+      line-height: 1.45;
+    }
+    .response ul { padding-left: 20px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .chip {
+      border: 1px solid var(--cp-border);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--cp-text-muted);
+      background: var(--cp-surface);
+      font-size: 12px;
+    }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .tab {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+    .tab.active { border-color: var(--cp-accent); color: var(--cp-accent); font-weight: 800; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: var(--cp-surface-soft);
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--cp-text);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      overflow: auto;
+    }
+    .action-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .action-list li {
+      display: grid;
+      grid-template-columns: 30px 1fr;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+    }
+    .num {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .hidden { display: none; }
+    @media (max-width: 1100px) {
+      .hero, .incident-grid, .two-col { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="logo">SC</div><span>Security Operations Demo</span></div>
+    <div class="pill-row">
+      <span class="pill">Servicios financieros</span>
+      <span class="pill">Seguridad y cumplimiento</span>
+      <span class="pill">Security Copilot + Defender + Purview</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <article class="card">
+        <div class="pill-row">
+          <span class="pill">Microsoft Defender XDR</span>
+          <span class="pill">Security Copilot</span>
+          <span class="pill">Microsoft Purview</span>
+        </div>
+        <h1>Defensa con IA y protección de datos</h1>
+        <p>Demo de respuesta a incidente: phishing con movimiento lateral, evaluación de impacto y recomendación de contención con contexto de datos sensibles.</p>
+      </article>
+      <article class="card">
+        <h2>Outcome esperado</h2>
+        <div class="metrics">
+          <div class="metric"><span>MTTR</span><strong>-45%</strong></div>
+          <div class="metric"><span>Impacto</span><strong>Priorizado</strong></div>
+          <div class="metric"><span>Datos</span><strong>Protegidos</strong></div>
+        </div>
+        <p style="margin-top: 14px;">Objetivo: acelerar triage, explicar riesgo en lenguaje ejecutivo y preservar datos sensibles con Purview.</p>
+      </article>
+    </section>
+
+    <section class="incident-grid">
+      <article class="card">
+        <h2>Incidente: phishing con movimiento lateral</h2>
+        <p><span class="severity">Severidad alta</span> Usuario comprometido, endpoint con ejecución sospechosa y acceso a repositorio con datos clasificados.</p>
+        <div class="timeline" id="timeline"></div>
+      </article>
+
+      <article class="card copilot">
+        <div>
+          <h2>Security Copilot</h2>
+          <p>Seleccioná un prompt para ver cómo la IA ayuda a explicar, evaluar impacto y sugerir respuesta.</p>
+        </div>
+        <div class="prompt-list" id="promptList"></div>
+        <div class="response" id="copilotResponse"></div>
+      </article>
+    </section>
+
+    <section class="two-col">
+      <article class="card">
+        <h2>Respuesta recomendada</h2>
+        <ul class="action-list">
+          <li><span class="num">1</span><span><strong>Contener identidad</strong><br>Revocar sesiones, resetear credenciales y bloquear inicio de sesión riesgoso.</span></li>
+          <li><span class="num">2</span><span><strong>Aislar endpoint</strong><br>Usar Defender para aislar NB-FIN-042 y recolectar paquete forense.</span></li>
+          <li><span class="num">3</span><span><strong>Bloquear IoCs</strong><br>Agregar URL, hash y dominio de phishing a indicadores de bloqueo.</span></li>
+          <li><span class="num">4</span><span><strong>Revisar datos sensibles</strong><br>Validar con Purview si hubo acceso a información PII o financiera.</span></li>
+          <li><span class="num">5</span><span><strong>Comunicar y cerrar</strong><br>Documentar impacto, acciones y recomendaciones para comité de riesgo.</span></li>
+        </ul>
+      </article>
+
+      <article class="card">
+        <h2>Guion de la demo</h2>
+        <div class="tabs">
+          <button class="tab active" data-tab="script">Guion</button>
+          <button class="tab" data-tab="prompts">Prompts</button>
+          <button class="tab" data-tab="incident">Incidente</button>
+        </div>
+        <div id="scriptTab"></div>
+        <div id="promptsTab" class="hidden"></div>
+        <div id="incidentTab" class="hidden"></div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const INCIDENT = {
+      id: "INC-FIN-2026-0819",
+      title: "Phishing con movimiento lateral",
+      user: "martina.rivas@banco-nova.example",
+      device: "NB-FIN-042",
+      data: "Repositorio SharePoint: Clientes Alto Valor - etiqueta Confidencial",
+      iocs: ["login-m365-secure.example", "185.199.110.153", "invoice_review.js", "SHA256: 9f2a...c81e"],
+      timeline: [
+        ["08:12", "Defender for Office 365 detecta correo de phishing con link a portal falso de Microsoft 365."],
+        ["08:17", "La usuaria ingresa credenciales; Entra ID marca inicio de sesión riesgoso desde ubicación anómala."],
+        ["08:24", "Defender for Endpoint detecta descarga de script JavaScript y ejecución con PowerShell."],
+        ["08:31", "Se observa enumeración de recursos compartidos y autenticación hacia equipo FIN-FS-03."],
+        ["08:39", "Purview registra acceso a carpeta con etiqueta Confidencial y datos de clientes."],
+        ["08:43", "Defender XDR correlaciona alertas y eleva incidente a severidad alta."]
+      ]
+    };
+
+    const PROMPTS = [
+      {
+        title: "Explicar el incidente",
+        text: "Explicá este incidente en español para un analista L1: qué ocurrió, cuál fue la cadena de ataque y qué evidencias lo respaldan.",
+        answer: `<h3>Resumen para analista L1</h3><p>El incidente comenzó con un correo de phishing que llevó a la usuaria a un portal falso. Luego se observó inicio de sesión riesgoso, ejecución de script en el endpoint y movimiento lateral hacia recursos financieros.</p><ul><li>Vector inicial: phishing.</li><li>Identidad comprometida: martina.rivas@banco-nova.example.</li><li>Endpoint afectado: NB-FIN-042.</li><li>Movimiento lateral: autenticación hacia FIN-FS-03.</li></ul>`
+      },
+      {
+        title: "Evaluar impacto",
+        text: "Evaluá el impacto potencial del incidente considerando identidad, endpoint y datos protegidos por Purview.",
+        answer: `<h3>Impacto potencial</h3><ul><li><strong>Identidad:</strong> credenciales expuestas y sesión riesgosa.</li><li><strong>Endpoint:</strong> ejecución sospechosa con posible persistencia.</li><li><strong>Datos:</strong> acceso a carpeta con etiqueta Confidencial y datos de clientes.</li><li><strong>Riesgo:</strong> alto por posible exposición de PII financiera.</li></ul>`
+      },
+      {
+        title: "Priorizar respuesta",
+        text: "Sugerí una respuesta priorizada para contener el incidente en Microsoft Defender XDR.",
+        answer: `<h3>Respuesta priorizada</h3><ol><li>Revocar sesiones y resetear contraseña de la usuaria.</li><li>Aislar NB-FIN-042 desde Defender for Endpoint.</li><li>Bloquear dominio, IP y hash observados.</li><li>Buscar actividad similar en otros usuarios.</li><li>Recolectar evidencia y documentar el incidente.</li></ol>`
+      },
+      {
+        title: "Consultar datos sensibles",
+        text: "Usando el contexto de Purview, indicá qué datos sensibles pudieron estar expuestos y qué validaciones harías.",
+        answer: `<h3>Validación con Purview</h3><p>El repositorio accedido tiene etiqueta Confidencial y contiene datos de clientes de alto valor. Validaría actividad sobre archivos, descargas, compartidos externos y accesos posteriores al compromiso.</p><ul><li>Revisar auditoría de SharePoint.</li><li>Identificar archivos abiertos o descargados.</li><li>Confirmar sensibilidad y retención aplicable.</li></ul>`
+      },
+      {
+        title: "Preparar comunicación ejecutiva",
+        text: "Generá un resumen ejecutivo del incidente con impacto, acciones tomadas y próximos pasos.",
+        answer: `<h3>Resumen ejecutivo</h3><p>Se detectó un incidente de phishing con compromiso de identidad y actividad lateral. Se priorizó por posible acceso a datos confidenciales. Las acciones recomendadas son contener identidad, aislar endpoint, bloquear IoCs, revisar exposición de datos con Purview y comunicar estado al comité de riesgo.</p>`
+      }
+    ];
+
+    const SCRIPT = `1. Abrir el panel y presentar el incidente INC-FIN-2026-0819.
+2. Mostrar la cadena de ataque: phishing, credenciales, endpoint, movimiento lateral y acceso a datos.
+3. Usar Security Copilot para pedir explicación del incidente en lenguaje natural.
+4. Pedir evaluación de impacto cruzando Defender XDR con contexto de Purview.
+5. Pedir respuesta priorizada: identidad, endpoint, IoCs, hunting y comunicación.
+6. Cerrar mostrando el valor: menor tiempo de respuesta, analistas asistidos y datos protegidos.`;
+
+    const promptList = document.getElementById("promptList");
+    const copilotResponse = document.getElementById("copilotResponse");
+    const timeline = document.getElementById("timeline");
+    const scriptTab = document.getElementById("scriptTab");
+    const promptsTab = document.getElementById("promptsTab");
+    const incidentTab = document.getElementById("incidentTab");
+
+    function renderTimeline() {
+      timeline.innerHTML = INCIDENT.timeline.map(([time, text]) => `
+        <div class="event">
+          <div class="time">${time}</div>
+          <div>${text}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderPrompts() {
+      promptList.innerHTML = PROMPTS.map((prompt, index) => `
+        <button class="prompt-btn ${index === 0 ? "active" : ""}" data-index="${index}">
+          <strong>${prompt.title}</strong><br><span>${prompt.text}</span>
+        </button>
+      `).join("");
+      promptList.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => selectPrompt(Number(btn.dataset.index)));
+      });
+      selectPrompt(0);
+    }
+
+    function selectPrompt(index) {
+      promptList.querySelectorAll("button").forEach((btn, i) => btn.classList.toggle("active", i === index));
+      const prompt = PROMPTS[index];
+      copilotResponse.innerHTML = `${prompt.answer}<div class="chips"><span class="chip">Security Copilot</span><span class="chip">Defender XDR</span><span class="chip">Purview context</span></div>`;
+    }
+
+    function renderTabs() {
+      scriptTab.innerHTML = `<pre>${SCRIPT}</pre>`;
+      promptsTab.innerHTML = `<pre>${PROMPTS.map((p, i) => `${i + 1}. ${p.text}`).join("\\n\\n")}</pre>`;
+      incidentTab.innerHTML = `<pre>Incidente: ${INCIDENT.id}
+Título: ${INCIDENT.title}
+Usuario: ${INCIDENT.user}
+Dispositivo: ${INCIDENT.device}
+Datos potencialmente expuestos: ${INCIDENT.data}
+IoCs:
+- ${INCIDENT.iocs.join("\\n- ")}</pre>`;
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          scriptTab.classList.toggle("hidden", tab.dataset.tab !== "script");
+          promptsTab.classList.toggle("hidden", tab.dataset.tab !== "prompts");
+          incidentTab.classList.toggle("hidden", tab.dataset.tab !== "incident");
+        });
+      });
+    }
+
+    renderTimeline();
+    renderPrompts();
+    renderTabs();
+  </script>
+</body>
+</html>
