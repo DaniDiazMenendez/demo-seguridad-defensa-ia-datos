@@ -331,6 +331,32 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
     }
+    .exec-incident-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .exec-incident {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--cp-surface-soft);
+    }
+    .exec-incident strong { display: block; margin-bottom: 4px; }
+    .status {
+      display: inline-flex;
+      height: fit-content;
+      border-radius: 999px;
+      padding: 5px 9px;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
     .risk {
       min-height: 130px;
       border: 1px solid var(--cp-border);
@@ -351,7 +377,7 @@
     }
     .hidden { display: none; }
     @media (max-width: 1180px) {
-      .hero, .analyst-grid, .exec-grid, .playbook-grid { grid-template-columns: 1fr; }
+      .hero, .analyst-grid, .exec-grid, .playbook-grid, .exec-incident { grid-template-columns: 1fr; }
       .metric-grid, .entity-grid, .risk-map, .profile-tabs { grid-template-columns: 1fr; }
     }
   </style>
@@ -448,12 +474,13 @@
       <div class="exec-grid">
         <article class="card">
           <h2>Resumen ejecutivo</h2>
-          <p>Se detectó una campaña de phishing que derivó en compromiso de identidad, actividad sospechosa en endpoint y posible acceso a datos confidenciales de clientes. Security Copilot ayuda a traducir alertas técnicas en impacto y respuesta priorizada.</p>
+          <p>El tablero ejecutivo consolida los incidentes técnicos en lenguaje de negocio: qué pasó, qué riesgo genera, qué decisión requiere y qué acción ya está en curso.</p>
           <div class="metric-grid">
-            <div class="metric"><span>Severidad</span><strong>Alta</strong></div>
-            <div class="metric"><span>Usuarios</span><strong>1 confirmado</strong></div>
-            <div class="metric"><span>Datos</span><strong>Confidencial</strong></div>
+            <div class="metric"><span>Incidentes activos</span><strong>2</strong></div>
+            <div class="metric"><span>Crítico para negocio</span><strong>1</strong></div>
+            <div class="metric"><span>Decisión requerida</span><strong>2</strong></div>
           </div>
+          <div class="exec-incident-list" id="execIncidentList"></div>
         </article>
 
         <article class="card">
@@ -472,6 +499,7 @@
             <li><span class="num">1</span><span><strong>Autorizar contención ampliada</strong><br>Aplicar reset preventivo a usuarios que recibieron el phishing.</span></li>
             <li><span class="num">2</span><span><strong>Validar exposición de datos</strong><br>Revisión Purview de accesos, descargas y compartidos externos.</span></li>
             <li><span class="num">3</span><span><strong>Refuerzo preventivo</strong><br>Campaña anti-phishing y ajuste de políticas de acceso condicional.</span></li>
+            <li><span class="num">4</span><span><strong>Comunicación</strong><br>Preparar comunicación interna preventiva. Comunicación externa sólo si Purview confirma exfiltración o acceso no autorizado a datos regulados.</span></li>
           </ul>
         </article>
 
@@ -508,7 +536,13 @@
           ["08:31", "Autenticación hacia servidor financiero FIN-FS-03."],
           ["08:39", "Purview registra acceso a carpeta confidencial."],
           ["08:43", "Defender XDR correlaciona el incidente como severidad alta."]
-        ]
+        ],
+        executive: {
+          businessImpact: "Riesgo de exposición de datos de clientes de alto valor.",
+          status: "Contención en curso",
+          decision: "Autorizar reset preventivo y revisión Purview completa.",
+          owner: "CISO + Riesgo Operacional"
+        }
       },
       {
         id: "INC-FIN-0820",
@@ -527,7 +561,13 @@
           ["19:45", "DLP identifica archivos con datos sensibles."],
           ["19:52", "Defender XDR correlaciona actividad de usuario."],
           ["20:05", "Se solicita validación del manager."]
-        ]
+        ],
+        executive: {
+          businessImpact: "Posible uso indebido o descarga no justificada de datos financieros.",
+          status: "Validación requerida",
+          decision: "Confirmar justificación de negocio y aplicar revisión DLP.",
+          owner: "Data Protection Officer"
+        }
       }
     ];
 
@@ -575,6 +615,7 @@
     const copilotAnswer = document.getElementById("copilotAnswer");
     const playbookSteps = document.getElementById("playbookSteps");
     const playbookProgress = document.getElementById("playbookProgress");
+    const execIncidentList = document.getElementById("execIncidentList");
 
     function renderAlerts() {
       alertList.innerHTML = INCIDENTS.map((incident, index) => `
@@ -614,6 +655,22 @@
       `).join("");
       promptList.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => selectPrompt(Number(btn.dataset.index))));
       selectPrompt(0);
+    }
+
+    function renderExecutiveIncidents() {
+      execIncidentList.innerHTML = INCIDENTS.map(incident => `
+        <div class="exec-incident">
+          <div>
+            <strong>${incident.title}</strong>
+            <p>${incident.executive.businessImpact}</p>
+            <div class="pill-row">
+              <span class="chip">Dueño: ${incident.executive.owner}</span>
+              <span class="chip">Decisión: ${incident.executive.decision}</span>
+            </div>
+          </div>
+          <span class="status">${incident.executive.status}</span>
+        </div>
+      `).join("");
     }
 
     function renderPlaybook() {
@@ -663,6 +720,7 @@
     renderIncident();
     renderPrompts();
     renderPlaybook();
+    renderExecutiveIncidents();
   </script>
 </body>
 </html>
