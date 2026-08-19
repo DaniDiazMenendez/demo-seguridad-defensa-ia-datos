@@ -250,6 +250,66 @@
       background: var(--cp-surface-soft);
       color: var(--cp-text-muted);
     }
+    .playbook-card {
+      margin-top: 18px;
+      border-color: var(--cp-accent);
+      background: var(--cp-panel-strong);
+    }
+    .playbook-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .primary {
+      border: 1px solid var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 800;
+    }
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--cp-accent);
+      transition: width .35s ease;
+    }
+    .playbook-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .play-step {
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--cp-surface-soft);
+    }
+    .play-step.done {
+      border-color: var(--cp-success);
+      background: var(--cp-highlight);
+    }
+    .play-step strong { display: block; margin-bottom: 4px; }
+    .play-step small { color: var(--cp-text-muted); line-height: 1.35; }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 6px;
+      background: var(--cp-border-strong);
+    }
+    .done .status-dot { background: var(--cp-success); }
     .num {
       width: 28px;
       height: 28px;
@@ -291,7 +351,7 @@
     }
     .hidden { display: none; }
     @media (max-width: 1180px) {
-      .hero, .analyst-grid, .exec-grid { grid-template-columns: 1fr; }
+      .hero, .analyst-grid, .exec-grid, .playbook-grid { grid-template-columns: 1fr; }
       .metric-grid, .entity-grid, .risk-map, .profile-tabs { grid-template-columns: 1fr; }
     }
   </style>
@@ -316,7 +376,7 @@
       <article class="card">
         <h2>Outcome esperado</h2>
         <div class="metric-grid">
-          <div class="metric"><span>Respuesta</span><strong>más rápida</strong></div>
+          <div class="metric"><span>Respuesta</span><strong id="execResponseMetric">más rápida</strong></div>
           <div class="metric"><span>Impacto</span><strong>claro</strong></div>
           <div class="metric"><span>Datos</span><strong>protegidos</strong></div>
         </div>
@@ -370,6 +430,18 @@
           <li><span class="num">5</span><span><strong>Cierre</strong><br>Documentar impacto, causa raíz y controles preventivos.</span></li>
         </ul>
       </article>
+
+      <article class="card playbook-card">
+        <div class="playbook-head">
+          <div>
+            <h2>Playbook de respuesta asistida</h2>
+            <p>Activá un flujo coordinado de respuesta para convertir el incidente en acciones concretas.</p>
+          </div>
+          <button class="primary" id="runPlaybook">Activar playbook</button>
+        </div>
+        <div class="progress"><div class="progress-bar" id="playbookProgress"></div></div>
+        <div class="playbook-grid" id="playbookSteps"></div>
+      </article>
     </section>
 
     <section id="executiveView" class="hidden">
@@ -387,8 +459,8 @@
         <article class="card">
           <h2>Mapa de impacto</h2>
           <div class="risk-map">
-            <div class="risk critical"><h3>Cliente y datos</h3><p>Repositorio con datos de clientes de alto valor accedido durante ventana de riesgo.</p></div>
-            <div class="risk"><h3>Operación</h3><p>Un equipo aislado y una identidad contenida; continuidad operativa sin impacto mayor.</p></div>
+            <div class="risk critical"><h3>Cliente y datos</h3><p id="dataRiskText">Repositorio con datos de clientes de alto valor accedido durante ventana de riesgo.</p></div>
+            <div class="risk"><h3>Operación</h3><p id="opsRiskText">Contención pendiente de ejecutar; el playbook reduce pasos manuales y coordina acciones.</p></div>
             <div class="risk"><h3>Regulatorio</h3><p>Requiere validar exposición real y conservar evidencia para auditoría.</p></div>
             <div class="risk"><h3>Reputación</h3><p>Comunicación preventiva si se confirma descarga o exfiltración.</p></div>
           </div>
@@ -482,7 +554,16 @@
       }
     ];
 
+    const PLAYBOOK_STEPS = [
+      ["Identidad", "Revocar sesiones, resetear contraseña y marcar usuario para revisión."],
+      ["Endpoint", "Aislar NB-FIN-042 y solicitar paquete de investigación en Defender."],
+      ["Correo", "Purgar phishing de buzones y bloquear remitente/dominio malicioso."],
+      ["IoCs", "Publicar indicadores de bloqueo: URL, IP y hash observados."],
+      ["Datos", "Abrir revisión Purview sobre archivos confidenciales accedidos."]
+    ];
+
     let selectedIncident = 0;
+    let playbookDone = 0;
 
     const alertList = document.getElementById("alertList");
     const incidentTitle = document.getElementById("incidentTitle");
@@ -492,6 +573,8 @@
     const timeline = document.getElementById("timeline");
     const promptList = document.getElementById("promptList");
     const copilotAnswer = document.getElementById("copilotAnswer");
+    const playbookSteps = document.getElementById("playbookSteps");
+    const playbookProgress = document.getElementById("playbookProgress");
 
     function renderAlerts() {
       alertList.innerHTML = INCIDENTS.map((incident, index) => `
@@ -533,6 +616,34 @@
       selectPrompt(0);
     }
 
+    function renderPlaybook() {
+      playbookSteps.innerHTML = PLAYBOOK_STEPS.map(([title, body], index) => `
+        <div class="play-step ${index < playbookDone ? "done" : ""}">
+          <strong><span class="status-dot"></span>${title}</strong>
+          <small>${body}</small>
+        </div>
+      `).join("");
+      playbookProgress.style.width = `${(playbookDone / PLAYBOOK_STEPS.length) * 100}%`;
+      const complete = playbookDone === PLAYBOOK_STEPS.length;
+      document.getElementById("runPlaybook").textContent = complete ? "Playbook completado" : playbookDone > 0 ? "Continuar playbook" : "Activar playbook";
+      document.getElementById("runPlaybook").disabled = complete;
+      if (complete) {
+        copilotAnswer.innerHTML = `<h3>Playbook completado</h3><p>La respuesta coordinada quedó ejecutada: identidad contenida, endpoint aislado, phishing purgado, IoCs bloqueados y revisión Purview abierta.</p><div class="pill-row"><span class="chip">Tiempo estimado ahorrado: 42 min</span><span class="chip">5 acciones coordinadas</span><span class="chip">Evidencia preservada</span></div>`;
+        document.getElementById("execResponseMetric").textContent = "42 min ahorrados";
+        document.getElementById("opsRiskText").textContent = "Identidad contenida y endpoint aislado. Continuidad operativa preservada con investigación en curso.";
+        document.getElementById("dataRiskText").textContent = "Revisión Purview abierta para confirmar accesos, descargas y exposición real de datos confidenciales.";
+      }
+    }
+
+    function runPlaybook() {
+      if (playbookDone >= PLAYBOOK_STEPS.length) return;
+      playbookDone += 1;
+      renderPlaybook();
+      if (playbookDone === PLAYBOOK_STEPS.length) return;
+      const [title, body] = PLAYBOOK_STEPS[playbookDone - 1];
+      copilotAnswer.innerHTML = `<h3>Acción ejecutada: ${title}</h3><p>${body}</p><p>Security Copilot registra la acción y actualiza el estado del incidente para el analista.</p><div class="pill-row"><span class="chip">Paso ${playbookDone}/${PLAYBOOK_STEPS.length}</span><span class="chip">Defender XDR</span><span class="chip">Purview</span></div>`;
+    }
+
     function selectPrompt(index) {
       promptList.querySelectorAll("button").forEach((btn, i) => btn.classList.toggle("active", i === index));
       copilotAnswer.innerHTML = `${PROMPTS[index].answer}<div class="pill-row"><span class="chip">Security Copilot</span><span class="chip">Defender XDR</span><span class="chip">Purview</span></div>`;
@@ -546,10 +657,12 @@
         document.getElementById("executiveView").classList.toggle("hidden", tab.dataset.profile !== "executive");
       });
     });
+    document.getElementById("runPlaybook").addEventListener("click", runPlaybook);
 
     renderAlerts();
     renderIncident();
     renderPrompts();
+    renderPlaybook();
   </script>
 </body>
 </html>
