@@ -8,9 +8,10 @@ Outcome esperado: Respuesta a incidentes más rápida y datos protegidos.
 ## Incluye
 
 - Incidente de phishing con movimiento lateral.
-- Línea de tiempo del incidente.
-- 5 prompts en español para Security Copilot.
-- Respuestas guiadas para explicación, impacto, respuesta y comunicación ejecutiva.
+- Dos perfiles de demo: Vista Analista SOC y Vista Ejecutiva.
+- Cola de incidentes, entidades, línea de tiempo y prompts para Security Copilot.
+- Resumen ejecutivo, mapa de impacto y decisiones para comité.
+- Prompts en español para explicación, impacto, respuesta y comunicación ejecutiva.
 - Guion de demo.
 
 ## Nota técnica

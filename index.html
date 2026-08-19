@@ -66,7 +66,6 @@
       --cp-sheen: rgba(255, 255, 255, 0.04);
       --cp-highlight: rgba(253, 142, 161, 0.12);
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -78,7 +77,7 @@
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -91,30 +90,30 @@
     .logo {
       width: 36px;
       height: 36px;
+      border-radius: 10px;
       display: grid;
       place-items: center;
-      border-radius: 10px;
       background: var(--cp-accent);
       color: var(--cp-accent-fg);
       font-weight: 900;
     }
     .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .pill {
+    .pill, .chip {
       border: 1px solid var(--cp-border);
-      background: var(--cp-surface);
       border-radius: 999px;
       padding: 6px 10px;
+      background: var(--cp-surface);
       color: var(--cp-text-muted);
       font-size: 12px;
     }
     .shell {
-      width: min(1320px, calc(100% - 32px));
+      width: min(1360px, calc(100% - 32px));
       margin: 0 auto;
       padding: 28px 0;
     }
     .hero {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
+      grid-template-columns: 1.15fr 0.85fr;
       gap: 18px;
       margin-bottom: 18px;
     }
@@ -126,116 +125,118 @@
       box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
     }
     h1, h2, h3, p { margin-top: 0; }
-    h1 { font-size: clamp(30px, 4vw, 52px); line-height: 1.05; margin-bottom: 14px; }
+    h1 { font-size: clamp(30px, 4vw, 50px); line-height: 1.05; margin-bottom: 14px; }
     h2 { font-size: 20px; margin-bottom: 12px; }
     h3 { font-size: 16px; margin-bottom: 8px; }
     p { color: var(--cp-text-muted); line-height: 1.45; }
-    .metrics {
+    .metric-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
     .metric {
       border: 1px solid var(--cp-border);
-      background: var(--cp-surface-soft);
       border-radius: 12px;
+      background: var(--cp-surface-soft);
       padding: 12px;
     }
-    .metric strong { display: block; font-size: 24px; margin-top: 4px; }
-    .incident-grid {
+    .metric strong { display: block; font-size: 26px; margin-top: 4px; }
+    .profile-tabs {
       display: grid;
-      grid-template-columns: 1fr 420px;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .profile-tab {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: left;
+    }
+    .profile-tab.active {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+    }
+    .profile-tab strong { display: block; margin-bottom: 4px; }
+    .analyst-grid {
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr) 410px;
       gap: 18px;
       align-items: start;
     }
-    .timeline {
-      display: grid;
-      gap: 12px;
-    }
-    .event {
-      display: grid;
-      grid-template-columns: 90px 1fr;
-      gap: 12px;
+    .alert-list { display: grid; gap: 10px; }
+    .alert {
       border: 1px solid var(--cp-border);
       border-radius: 12px;
       padding: 12px;
       background: var(--cp-surface-soft);
+      text-align: left;
+      color: var(--cp-text);
+      width: 100%;
     }
-    .time { font-weight: 800; color: var(--cp-accent); }
+    .alert.active { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
     .severity {
       display: inline-flex;
       border-radius: 999px;
       padding: 4px 8px;
-      background: var(--cp-accent-soft);
-      color: var(--cp-accent);
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      margin-bottom: 8px;
     }
-    .copilot {
+    .entity-grid {
       display: grid;
-      grid-template-rows: auto auto 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .entity {
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      background: var(--cp-surface-soft);
+      padding: 12px;
+    }
+    .timeline { display: grid; gap: 10px; margin-top: 12px; }
+    .event {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 10px;
+      border-left: 3px solid var(--cp-accent);
+      padding: 8px 10px;
+      background: var(--cp-surface-soft);
+      border-radius: 10px;
+    }
+    .time { font-weight: 800; color: var(--cp-accent); }
+    .copilot-panel {
+      display: grid;
       gap: 12px;
     }
-    .prompt-list { display: grid; gap: 8px; }
     .prompt-btn {
+      width: 100%;
       border: 1px solid var(--cp-border);
-      background: var(--cp-surface);
-      color: var(--cp-text);
       border-radius: 12px;
       padding: 10px;
       text-align: left;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      margin-bottom: 8px;
     }
-    .prompt-btn.active {
-      border-color: var(--cp-accent);
-      background: var(--cp-accent-soft);
-    }
-    .response {
+    .prompt-btn.active { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+    .copilot-answer {
       border: 1px solid var(--cp-border);
       border-radius: 14px;
-      background: var(--cp-surface-soft);
       padding: 14px;
-      min-height: 300px;
+      background: var(--cp-surface-soft);
+      min-height: 240px;
       line-height: 1.45;
-    }
-    .response ul { padding-left: 20px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .chip {
-      border: 1px solid var(--cp-border);
-      border-radius: 999px;
-      padding: 5px 9px;
-      color: var(--cp-text-muted);
-      background: var(--cp-surface);
-      font-size: 12px;
-    }
-    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .tab {
-      border: 1px solid var(--cp-border);
-      background: var(--cp-surface);
-      color: var(--cp-text-muted);
-      border-radius: 999px;
-      padding: 8px 12px;
-    }
-    .tab.active { border-color: var(--cp-accent); color: var(--cp-accent); font-weight: 800; }
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-    pre {
-      white-space: pre-wrap;
-      background: var(--cp-surface-soft);
-      border: 1px solid var(--cp-border);
-      border-radius: 12px;
-      padding: 14px;
-      color: var(--cp-text);
-      font-family: Consolas, "Courier New", Courier, monospace;
-      overflow: auto;
     }
     .action-list {
       display: grid;
       gap: 10px;
-      margin: 0;
+      margin: 12px 0 0;
       padding: 0;
       list-style: none;
     }
@@ -243,7 +244,6 @@
       display: grid;
       grid-template-columns: 30px 1fr;
       gap: 10px;
-      align-items: start;
       border: 1px solid var(--cp-border);
       border-radius: 12px;
       padding: 12px;
@@ -258,202 +258,298 @@
       place-items: center;
       background: var(--cp-accent);
       color: var(--cp-accent-fg);
-      font-weight: 800;
       font-size: 12px;
+      font-weight: 900;
+    }
+    .exec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .risk-map {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .risk {
+      min-height: 130px;
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--cp-surface-soft);
+    }
+    .risk.critical { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+    .script {
+      white-space: pre-wrap;
+      background: var(--cp-surface-soft);
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 14px;
+      font-family: Consolas, "Courier New", Courier, monospace;
+      color: var(--cp-text);
+      line-height: 1.45;
     }
     .hidden { display: none; }
-    @media (max-width: 1100px) {
-      .hero, .incident-grid, .two-col { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: 1fr; }
+    @media (max-width: 1180px) {
+      .hero, .analyst-grid, .exec-grid { grid-template-columns: 1fr; }
+      .metric-grid, .entity-grid, .risk-map, .profile-tabs { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><div class="logo">SC</div><span>Security Operations Demo</span></div>
+    <div class="brand"><div class="logo">SC</div><span>Security Copilot Demo</span></div>
     <div class="pill-row">
       <span class="pill">Servicios financieros</span>
-      <span class="pill">Seguridad y cumplimiento</span>
-      <span class="pill">Security Copilot + Defender + Purview</span>
+      <span class="pill">Security Copilot</span>
+      <span class="pill">Defender XDR</span>
+      <span class="pill">Purview</span>
     </div>
   </header>
 
   <main class="shell">
     <section class="hero">
       <article class="card">
-        <div class="pill-row">
-          <span class="pill">Microsoft Defender XDR</span>
-          <span class="pill">Security Copilot</span>
-          <span class="pill">Microsoft Purview</span>
-        </div>
         <h1>Defensa con IA y protección de datos</h1>
-        <p>Demo de respuesta a incidente: phishing con movimiento lateral, evaluación de impacto y recomendación de contención con contexto de datos sensibles.</p>
+        <p>Una misma situación de seguridad vista desde dos perfiles: el analista que investiga y responde, y el ejecutivo que necesita entender impacto, riesgo y decisión.</p>
       </article>
       <article class="card">
         <h2>Outcome esperado</h2>
-        <div class="metrics">
-          <div class="metric"><span>MTTR</span><strong>-45%</strong></div>
-          <div class="metric"><span>Impacto</span><strong>Priorizado</strong></div>
-          <div class="metric"><span>Datos</span><strong>Protegidos</strong></div>
+        <div class="metric-grid">
+          <div class="metric"><span>Respuesta</span><strong>más rápida</strong></div>
+          <div class="metric"><span>Impacto</span><strong>claro</strong></div>
+          <div class="metric"><span>Datos</span><strong>protegidos</strong></div>
         </div>
-        <p style="margin-top: 14px;">Objetivo: acelerar triage, explicar riesgo en lenguaje ejecutivo y preservar datos sensibles con Purview.</p>
       </article>
     </section>
 
-    <section class="incident-grid">
-      <article class="card">
-        <h2>Incidente: phishing con movimiento lateral</h2>
-        <p><span class="severity">Severidad alta</span> Usuario comprometido, endpoint con ejecución sospechosa y acceso a repositorio con datos clasificados.</p>
-        <div class="timeline" id="timeline"></div>
-      </article>
-
-      <article class="card copilot">
-        <div>
-          <h2>Security Copilot</h2>
-          <p>Seleccioná un prompt para ver cómo la IA ayuda a explicar, evaluar impacto y sugerir respuesta.</p>
-        </div>
-        <div class="prompt-list" id="promptList"></div>
-        <div class="response" id="copilotResponse"></div>
-      </article>
+    <section class="profile-tabs">
+      <button class="profile-tab active" data-profile="analyst">
+        <strong>Vista Analista SOC</strong>
+        Investigar alerta, entender entidades, pedir ayuda a Copilot y ejecutar respuesta.
+      </button>
+      <button class="profile-tab" data-profile="executive">
+        <strong>Vista Ejecutiva</strong>
+        Ver impacto de negocio, exposición de datos y decisiones recomendadas.
+      </button>
     </section>
 
-    <section class="two-col">
-      <article class="card">
-        <h2>Respuesta recomendada</h2>
+    <section id="analystView">
+      <div class="analyst-grid">
+        <aside class="card">
+          <h2>Cola de incidentes</h2>
+          <div class="alert-list" id="alertList"></div>
+        </aside>
+
+        <article class="card">
+          <h2 id="incidentTitle">Incidente</h2>
+          <p id="incidentSummary"></p>
+          <div class="pill-row" id="incidentTags"></div>
+          <div class="entity-grid" id="entities"></div>
+          <h3 style="margin-top: 16px;">Línea de tiempo</h3>
+          <div class="timeline" id="timeline"></div>
+        </article>
+
+        <aside class="card copilot-panel">
+          <div>
+            <h2>Security Copilot</h2>
+            <p>Prompts útiles para acelerar triage y respuesta.</p>
+          </div>
+          <div id="promptList"></div>
+          <div class="copilot-answer" id="copilotAnswer"></div>
+        </aside>
+      </div>
+
+      <article class="card" style="margin-top: 18px;">
+        <h2>Acciones recomendadas en Defender + Purview</h2>
         <ul class="action-list">
-          <li><span class="num">1</span><span><strong>Contener identidad</strong><br>Revocar sesiones, resetear credenciales y bloquear inicio de sesión riesgoso.</span></li>
-          <li><span class="num">2</span><span><strong>Aislar endpoint</strong><br>Usar Defender para aislar NB-FIN-042 y recolectar paquete forense.</span></li>
-          <li><span class="num">3</span><span><strong>Bloquear IoCs</strong><br>Agregar URL, hash y dominio de phishing a indicadores de bloqueo.</span></li>
-          <li><span class="num">4</span><span><strong>Revisar datos sensibles</strong><br>Validar con Purview si hubo acceso a información PII o financiera.</span></li>
-          <li><span class="num">5</span><span><strong>Comunicar y cerrar</strong><br>Documentar impacto, acciones y recomendaciones para comité de riesgo.</span></li>
+          <li><span class="num">1</span><span><strong>Identidad</strong><br>Revocar sesiones, forzar cambio de contraseña y revisar accesos anómalos.</span></li>
+          <li><span class="num">2</span><span><strong>Endpoint</strong><br>Aislar dispositivo afectado, recolectar evidencia y bloquear IoCs.</span></li>
+          <li><span class="num">3</span><span><strong>Correo</strong><br>Buscar mensajes similares, purgar phishing y actualizar políticas anti-phishing.</span></li>
+          <li><span class="num">4</span><span><strong>Datos</strong><br>Usar Purview para validar acceso/descarga de archivos con etiqueta Confidencial.</span></li>
+          <li><span class="num">5</span><span><strong>Cierre</strong><br>Documentar impacto, causa raíz y controles preventivos.</span></li>
         </ul>
       </article>
+    </section>
 
-      <article class="card">
-        <h2>Guion de la demo</h2>
-        <div class="tabs">
-          <button class="tab active" data-tab="script">Guion</button>
-          <button class="tab" data-tab="prompts">Prompts</button>
-          <button class="tab" data-tab="incident">Incidente</button>
-        </div>
-        <div id="scriptTab"></div>
-        <div id="promptsTab" class="hidden"></div>
-        <div id="incidentTab" class="hidden"></div>
-      </article>
+    <section id="executiveView" class="hidden">
+      <div class="exec-grid">
+        <article class="card">
+          <h2>Resumen ejecutivo</h2>
+          <p>Se detectó una campaña de phishing que derivó en compromiso de identidad, actividad sospechosa en endpoint y posible acceso a datos confidenciales de clientes. Security Copilot ayuda a traducir alertas técnicas en impacto y respuesta priorizada.</p>
+          <div class="metric-grid">
+            <div class="metric"><span>Severidad</span><strong>Alta</strong></div>
+            <div class="metric"><span>Usuarios</span><strong>1 confirmado</strong></div>
+            <div class="metric"><span>Datos</span><strong>Confidencial</strong></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Mapa de impacto</h2>
+          <div class="risk-map">
+            <div class="risk critical"><h3>Cliente y datos</h3><p>Repositorio con datos de clientes de alto valor accedido durante ventana de riesgo.</p></div>
+            <div class="risk"><h3>Operación</h3><p>Un equipo aislado y una identidad contenida; continuidad operativa sin impacto mayor.</p></div>
+            <div class="risk"><h3>Regulatorio</h3><p>Requiere validar exposición real y conservar evidencia para auditoría.</p></div>
+            <div class="risk"><h3>Reputación</h3><p>Comunicación preventiva si se confirma descarga o exfiltración.</p></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <h2>Decisiones para comité</h2>
+          <ul class="action-list">
+            <li><span class="num">1</span><span><strong>Autorizar contención ampliada</strong><br>Aplicar reset preventivo a usuarios que recibieron el phishing.</span></li>
+            <li><span class="num">2</span><span><strong>Validar exposición de datos</strong><br>Revisión Purview de accesos, descargas y compartidos externos.</span></li>
+            <li><span class="num">3</span><span><strong>Refuerzo preventivo</strong><br>Campaña anti-phishing y ajuste de políticas de acceso condicional.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>Guion ejecutivo de demo</h2>
+          <div class="script">1. Mostrar el incidente como historia de negocio: phishing, usuario, dispositivo y datos.
+2. Cambiar a Security Copilot para explicar el incidente en lenguaje claro.
+3. Mostrar cómo Defender acelera contención: identidad, endpoint y correo.
+4. Mostrar cómo Purview agrega contexto de sensibilidad de datos.
+5. Cerrar con decisiones: contener, validar exposición y prevenir repetición.</div>
+        </article>
+      </div>
     </section>
   </main>
 
   <script>
-    const INCIDENT = {
-      id: "INC-FIN-2026-0819",
-      title: "Phishing con movimiento lateral",
-      user: "martina.rivas@banco-nova.example",
-      device: "NB-FIN-042",
-      data: "Repositorio SharePoint: Clientes Alto Valor - etiqueta Confidencial",
-      iocs: ["login-m365-secure.example", "185.199.110.153", "invoice_review.js", "SHA256: 9f2a...c81e"],
-      timeline: [
-        ["08:12", "Defender for Office 365 detecta correo de phishing con link a portal falso de Microsoft 365."],
-        ["08:17", "La usuaria ingresa credenciales; Entra ID marca inicio de sesión riesgoso desde ubicación anómala."],
-        ["08:24", "Defender for Endpoint detecta descarga de script JavaScript y ejecución con PowerShell."],
-        ["08:31", "Se observa enumeración de recursos compartidos y autenticación hacia equipo FIN-FS-03."],
-        ["08:39", "Purview registra acceso a carpeta con etiqueta Confidencial y datos de clientes."],
-        ["08:43", "Defender XDR correlaciona alertas y eleva incidente a severidad alta."]
-      ]
-    };
-
-    const PROMPTS = [
+    const INCIDENTS = [
       {
-        title: "Explicar el incidente",
-        text: "Explicá este incidente en español para un analista L1: qué ocurrió, cuál fue la cadena de ataque y qué evidencias lo respaldan.",
-        answer: `<h3>Resumen para analista L1</h3><p>El incidente comenzó con un correo de phishing que llevó a la usuaria a un portal falso. Luego se observó inicio de sesión riesgoso, ejecución de script en el endpoint y movimiento lateral hacia recursos financieros.</p><ul><li>Vector inicial: phishing.</li><li>Identidad comprometida: martina.rivas@banco-nova.example.</li><li>Endpoint afectado: NB-FIN-042.</li><li>Movimiento lateral: autenticación hacia FIN-FS-03.</li></ul>`
+        id: "INC-FIN-0819",
+        title: "Phishing con movimiento lateral",
+        severity: "Alta",
+        summary: "Usuario de banca privada comprometido por phishing. Defender correlaciona correo malicioso, inicio de sesión riesgoso, ejecución en endpoint y acceso a repositorio confidencial.",
+        tags: ["Phishing", "Identidad", "Endpoint", "Movimiento lateral", "Purview"],
+        entities: [
+          ["Usuario", "martina.rivas@banco-nova.example"],
+          ["Endpoint", "NB-FIN-042"],
+          ["Recurso", "SharePoint · Clientes Alto Valor"],
+          ["Dato", "Etiqueta Confidencial · PII financiera"]
+        ],
+        timeline: [
+          ["08:12", "Defender for Office 365 detecta correo de phishing."],
+          ["08:17", "Entra ID marca inicio de sesión riesgoso."],
+          ["08:24", "Defender for Endpoint detecta ejecución sospechosa."],
+          ["08:31", "Autenticación hacia servidor financiero FIN-FS-03."],
+          ["08:39", "Purview registra acceso a carpeta confidencial."],
+          ["08:43", "Defender XDR correlaciona el incidente como severidad alta."]
+        ]
       },
       {
-        title: "Evaluar impacto",
-        text: "Evaluá el impacto potencial del incidente considerando identidad, endpoint y datos protegidos por Purview.",
-        answer: `<h3>Impacto potencial</h3><ul><li><strong>Identidad:</strong> credenciales expuestas y sesión riesgosa.</li><li><strong>Endpoint:</strong> ejecución sospechosa con posible persistencia.</li><li><strong>Datos:</strong> acceso a carpeta con etiqueta Confidencial y datos de clientes.</li><li><strong>Riesgo:</strong> alto por posible exposición de PII financiera.</li></ul>`
-      },
-      {
-        title: "Priorizar respuesta",
-        text: "Sugerí una respuesta priorizada para contener el incidente en Microsoft Defender XDR.",
-        answer: `<h3>Respuesta priorizada</h3><ol><li>Revocar sesiones y resetear contraseña de la usuaria.</li><li>Aislar NB-FIN-042 desde Defender for Endpoint.</li><li>Bloquear dominio, IP y hash observados.</li><li>Buscar actividad similar en otros usuarios.</li><li>Recolectar evidencia y documentar el incidente.</li></ol>`
-      },
-      {
-        title: "Consultar datos sensibles",
-        text: "Usando el contexto de Purview, indicá qué datos sensibles pudieron estar expuestos y qué validaciones harías.",
-        answer: `<h3>Validación con Purview</h3><p>El repositorio accedido tiene etiqueta Confidencial y contiene datos de clientes de alto valor. Validaría actividad sobre archivos, descargas, compartidos externos y accesos posteriores al compromiso.</p><ul><li>Revisar auditoría de SharePoint.</li><li>Identificar archivos abiertos o descargados.</li><li>Confirmar sensibilidad y retención aplicable.</li></ul>`
-      },
-      {
-        title: "Preparar comunicación ejecutiva",
-        text: "Generá un resumen ejecutivo del incidente con impacto, acciones tomadas y próximos pasos.",
-        answer: `<h3>Resumen ejecutivo</h3><p>Se detectó un incidente de phishing con compromiso de identidad y actividad lateral. Se priorizó por posible acceso a datos confidenciales. Las acciones recomendadas son contener identidad, aislar endpoint, bloquear IoCs, revisar exposición de datos con Purview y comunicar estado al comité de riesgo.</p>`
+        id: "INC-FIN-0820",
+        title: "Descarga masiva desde SharePoint",
+        severity: "Media",
+        summary: "Actividad anómala de descarga desde repositorio de clientes. No hay ejecución en endpoint, pero Purview detecta sensibilidad alta.",
+        tags: ["Purview", "SharePoint", "DLP", "Insider risk"],
+        entities: [
+          ["Usuario", "analista.riesgo@banco-nova.example"],
+          ["Recurso", "SharePoint · Riesgo Crediticio"],
+          ["Dato", "Información financiera clasificada"],
+          ["Acción", "Descarga masiva fuera de horario"]
+        ],
+        timeline: [
+          ["19:42", "Purview detecta descarga masiva."],
+          ["19:45", "DLP identifica archivos con datos sensibles."],
+          ["19:52", "Defender XDR correlaciona actividad de usuario."],
+          ["20:05", "Se solicita validación del manager."]
+        ]
       }
     ];
 
-    const SCRIPT = `1. Abrir el panel y presentar el incidente INC-FIN-2026-0819.
-2. Mostrar la cadena de ataque: phishing, credenciales, endpoint, movimiento lateral y acceso a datos.
-3. Usar Security Copilot para pedir explicación del incidente en lenguaje natural.
-4. Pedir evaluación de impacto cruzando Defender XDR con contexto de Purview.
-5. Pedir respuesta priorizada: identidad, endpoint, IoCs, hunting y comunicación.
-6. Cerrar mostrando el valor: menor tiempo de respuesta, analistas asistidos y datos protegidos.`;
+    const PROMPTS = [
+      {
+        title: "Explicá el incidente",
+        text: "Explicá qué pasó en lenguaje claro para un analista L1.",
+        answer: "<h3>Explicación</h3><p>El incidente combina phishing, compromiso de identidad y actividad en endpoint. La prioridad es contener la cuenta, aislar el dispositivo y validar si hubo acceso real a datos sensibles.</p>"
+      },
+      {
+        title: "Evaluá impacto",
+        text: "Evaluá impacto técnico, operativo y de datos.",
+        answer: "<h3>Impacto</h3><ul><li><strong>Técnico:</strong> identidad y endpoint comprometidos.</li><li><strong>Operativo:</strong> alcance limitado a un usuario confirmado.</li><li><strong>Datos:</strong> posible exposición de repositorio confidencial según Purview.</li></ul>"
+      },
+      {
+        title: "Sugerí respuesta",
+        text: "Dame una respuesta priorizada para Defender XDR.",
+        answer: "<h3>Respuesta priorizada</h3><ol><li>Revocar sesiones y resetear credenciales.</li><li>Aislar endpoint afectado.</li><li>Bloquear indicadores de phishing.</li><li>Hacer hunting de usuarios similares.</li><li>Validar accesos a datos con Purview.</li></ol>"
+      },
+      {
+        title: "Prepará resumen ejecutivo",
+        text: "Prepará un resumen para comité de riesgo.",
+        answer: "<h3>Resumen ejecutivo</h3><p>Se detectó un incidente de phishing con posible acceso a datos confidenciales. Las acciones recomendadas son contención inmediata, validación de exposición y refuerzo preventivo de controles.</p>"
+      }
+    ];
 
-    const promptList = document.getElementById("promptList");
-    const copilotResponse = document.getElementById("copilotResponse");
+    let selectedIncident = 0;
+
+    const alertList = document.getElementById("alertList");
+    const incidentTitle = document.getElementById("incidentTitle");
+    const incidentSummary = document.getElementById("incidentSummary");
+    const incidentTags = document.getElementById("incidentTags");
+    const entities = document.getElementById("entities");
     const timeline = document.getElementById("timeline");
-    const scriptTab = document.getElementById("scriptTab");
-    const promptsTab = document.getElementById("promptsTab");
-    const incidentTab = document.getElementById("incidentTab");
+    const promptList = document.getElementById("promptList");
+    const copilotAnswer = document.getElementById("copilotAnswer");
 
-    function renderTimeline() {
-      timeline.innerHTML = INCIDENT.timeline.map(([time, text]) => `
-        <div class="event">
-          <div class="time">${time}</div>
-          <div>${text}</div>
-        </div>
+    function renderAlerts() {
+      alertList.innerHTML = INCIDENTS.map((incident, index) => `
+        <button class="alert ${index === selectedIncident ? "active" : ""}" data-index="${index}">
+          <span class="severity">${incident.severity}</span>
+          <strong>${incident.title}</strong>
+          <p>${incident.id}</p>
+        </button>
+      `).join("");
+      alertList.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedIncident = Number(btn.dataset.index);
+          renderAlerts();
+          renderIncident();
+        });
+      });
+    }
+
+    function renderIncident() {
+      const incident = INCIDENTS[selectedIncident];
+      incidentTitle.textContent = incident.title;
+      incidentSummary.textContent = incident.summary;
+      incidentTags.innerHTML = incident.tags.map(tag => `<span class="chip">${tag}</span>`).join("");
+      entities.innerHTML = incident.entities.map(([label, value]) => `
+        <div class="entity"><span>${label}</span><strong>${value}</strong></div>
+      `).join("");
+      timeline.innerHTML = incident.timeline.map(([time, text]) => `
+        <div class="event"><span class="time">${time}</span><span>${text}</span></div>
       `).join("");
     }
 
     function renderPrompts() {
       promptList.innerHTML = PROMPTS.map((prompt, index) => `
         <button class="prompt-btn ${index === 0 ? "active" : ""}" data-index="${index}">
-          <strong>${prompt.title}</strong><br><span>${prompt.text}</span>
+          <strong>${prompt.title}</strong><br>${prompt.text}
         </button>
       `).join("");
-      promptList.querySelectorAll("button").forEach(btn => {
-        btn.addEventListener("click", () => selectPrompt(Number(btn.dataset.index)));
-      });
+      promptList.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => selectPrompt(Number(btn.dataset.index))));
       selectPrompt(0);
     }
 
     function selectPrompt(index) {
       promptList.querySelectorAll("button").forEach((btn, i) => btn.classList.toggle("active", i === index));
-      const prompt = PROMPTS[index];
-      copilotResponse.innerHTML = `${prompt.answer}<div class="chips"><span class="chip">Security Copilot</span><span class="chip">Defender XDR</span><span class="chip">Purview context</span></div>`;
+      copilotAnswer.innerHTML = `${PROMPTS[index].answer}<div class="pill-row"><span class="chip">Security Copilot</span><span class="chip">Defender XDR</span><span class="chip">Purview</span></div>`;
     }
 
-    function renderTabs() {
-      scriptTab.innerHTML = `<pre>${SCRIPT}</pre>`;
-      promptsTab.innerHTML = `<pre>${PROMPTS.map((p, i) => `${i + 1}. ${p.text}`).join("\\n\\n")}</pre>`;
-      incidentTab.innerHTML = `<pre>Incidente: ${INCIDENT.id}
-Título: ${INCIDENT.title}
-Usuario: ${INCIDENT.user}
-Dispositivo: ${INCIDENT.device}
-Datos potencialmente expuestos: ${INCIDENT.data}
-IoCs:
-- ${INCIDENT.iocs.join("\\n- ")}</pre>`;
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.addEventListener("click", () => {
-          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-          tab.classList.add("active");
-          scriptTab.classList.toggle("hidden", tab.dataset.tab !== "script");
-          promptsTab.classList.toggle("hidden", tab.dataset.tab !== "prompts");
-          incidentTab.classList.toggle("hidden", tab.dataset.tab !== "incident");
-        });
+    document.querySelectorAll(".profile-tab").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".profile-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("analystView").classList.toggle("hidden", tab.dataset.profile !== "analyst");
+        document.getElementById("executiveView").classList.toggle("hidden", tab.dataset.profile !== "executive");
       });
-    }
+    });
 
-    renderTimeline();
+    renderAlerts();
+    renderIncident();
     renderPrompts();
-    renderTabs();
   </script>
 </body>
 </html>
